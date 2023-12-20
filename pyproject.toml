@@ -32,6 +32,9 @@ types-Markdown = ">0.0"
 [tool.poetry.scripts]
 pdocs = "pdocs.cli:__hug__.cli"
 
+[tool.setuptools]
+package-data = {"pdocs" = ["py.typed"]}
+
 [tool.portray.mkdocs.theme]
 favicon = "art/logo.png"
 logo = "art/logo.png"
