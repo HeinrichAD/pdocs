@@ -1,5 +1,4 @@
 import os.path
-import re
 import typing
 
 from mako.exceptions import TopLevelLookupException
@@ -83,5 +82,20 @@ def text(mod: pdocs.doc.Module, source: bool = True) -> str:
     *source* - If set to True (the default) source will be included in the produced output.
     """
     raw_text = _get_tpl("/text.mako").render(module=mod, show_source_code=source)
-    text, _ = re.subn("\n *\n *\n+", "\n\n", raw_text.strip().replace("\r\n", "\n"))
-    return text
+    return raw_text.strip().replace("\r\n", "\n")
+
+
+def text_index(
+    roots: typing.Sequence[pdocs.doc.Module],
+    link_prefix: str = "./",
+    overwrite_mapping: typing.Optional[typing.Dict[str, str]] = dict()
+) -> str:
+    """
+    Render a markdown module index.
+    """
+    root_names = [root.name for root in roots] if roots else overwrite_mapping.keys()
+    mapping = {
+        name: f"{link_prefix}{overwrite_mapping.get(name, name)}".rstrip("/") + "/"
+        for name in root_names
+    }
+    return _get_tpl("/text_index.mako").render(modules=roots, links=mapping).strip().replace("\r\n", "\n")

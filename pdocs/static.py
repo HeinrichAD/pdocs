@@ -81,6 +81,11 @@ def md_out(
     externel_links: bool = True,
     source: bool = False,
 ):
+    if len(roots) > 1:
+        dst.mkdir(parents=True, exist_ok=True)
+        p = dst / "index.md"
+        idx = pdocs.render.text_index(roots)
+        p.write_text(idx, encoding="utf-8")
     for root in roots:
         for m in root.allmodules():
             p = dst.joinpath(module_to_path(m, extension="md"))
